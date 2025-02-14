@@ -1,0 +1,53 @@
+.main-bg {
+  height: 100vh;
+  background: linear-gradient(
+    91.08deg,
+    #dbbcc4 9.68%,
+    #f3dfd8 32.98%,
+    #d8bfd0 75.7%,
+    #b7b1d5 99.11%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg {
+  height: 80%;
+  width: 80%;
+  background: #f8fafc;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  margin-bottom: 1rem;
+}
+
+.input-div {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.input {
+  height: 40px;
+  min-width: 400px;
+  border-radius: 12px;
+  outline: none;
+  border: 1px solid #d7dfe9;
+}
+
+.label {
+  font-family: 'Roboto';
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  color: #7e858e;
+}
+
+.checkbox-div {
+}
