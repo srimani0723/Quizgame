@@ -1,0 +1,42 @@
+.header-bg {
+  background-color: #fafbfe;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 10vh;
+}
+
+.header-content {
+  width: 100%;
+  max-width: 1440px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  padding-right: 48px;
+  padding-bottom: 16px;
+  padding-left: 48px;
+}
+
+.custom-btn {
+  border: 2px solid #afafaf;
+  background-color: transparent;
+
+  padding-top: 12px;
+  padding-right: 24px;
+  padding-bottom: 12px;
+  padding-left: 24px;
+
+  gap: 8px;
+  border-radius: 8px;
+  border-width: 2px;
+  cursor: pointer;
+}
+
+.header-logo {
+  width: 77px;
+  height: 56px;
+  gap: 8px;
+}

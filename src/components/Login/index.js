@@ -16,13 +16,13 @@ const Login = () => {
   const [viewPass, SetViewPass] = useState(false)
   const [errorMsg, SetErrorMsg] = useState('')
   const history = useHistory()
-  const JwtToken = Cookies.get('jwtToken')
+  const JwtToken = Cookies.get('jwt_token')
   if (JwtToken !== undefined) {
     return <Redirect to="" />
   }
 
   const onSuccess = jwtToken => {
-    Cookies.set('jwtToken', jwtToken, {expires: 30})
+    Cookies.set('jwt_token', jwtToken, {expires: 30})
     history.replace('/')
   }
 
