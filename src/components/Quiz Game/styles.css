@@ -16,12 +16,14 @@
 .quiz-box {
   background-color: #f8fafc;
   width: 90%;
+  max-width: 1146px;
   height: 90%;
   max-height: 798px;
   border-radius: 5px;
-  padding: 20px;
+  padding: 40px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: space-between;
 }
 
@@ -29,6 +31,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 .ques-count {
@@ -79,13 +82,16 @@
 
 .middle-section {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   margin-top: 20px;
+  height: 100%;
+  width: 80%;
 }
 
 .ques-container {
-  width: 80%;
+  width: 100%;
 }
 
 .mcq-box {
@@ -115,6 +121,7 @@
 }
 
 .bottom-section {
+  width: 100%;
   display: flex;
   justify-content: flex-end;
 }
