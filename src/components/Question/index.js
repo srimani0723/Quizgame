@@ -2,12 +2,55 @@ import {useState, useEffect, useContext} from 'react'
 import './styles.css'
 import QuestionsContext from '../../Context/QuestionsContext'
 
-const Question = () => {
+const Question = props => {
+  const {question, onAnswer, timer, isRunning, setIsRunning} = props
   const {
     correctAnsIncrement,
     wrongAnsIncrement,
     unattemptedAnsIncrement,
   } = useContext(QuestionsContext)
+
+  // Handle option click
+  const handleOptionClick = isCorrect => {
+    if (isRunning) {
+      setIsRunning(false)
+      const isCorrectBool = isCorrect === 'true' // Convert string to boolean
+      if (isCorrectBool) {
+        correctAnsIncrement()
+      } else {
+        wrongAnsIncrement()
+      }
+      onAnswer()
+    }
+  }
+
+  return (
+    <div className="ques-container">
+      <p className="ques">{question.question_text}</p>
+      <ul className="mcq-box">
+        {question.options.map(option => (
+          <li
+            key={option.id}
+            className="ans"
+            onClick={() => handleOptionClick(option.is_correct)}
+          >
+            {question.options_type === 'IMAGE' ? (
+              <div className="image-option">
+                <img
+                  src={option.image_url}
+                  alt={option.text}
+                  className="option-image"
+                />
+                <span>{option.text}</span>
+              </div>
+            ) : (
+              <span>{option.text}</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
 }
 
 export default Question

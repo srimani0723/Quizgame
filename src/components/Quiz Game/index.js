@@ -3,6 +3,7 @@ import {useEffect, useState, useContext} from 'react'
 import Cookies from 'js-cookie'
 import Header from '../Header'
 import QuestionsContext from '../../Context/QuestionsContext'
+import Question from '../Question'
 
 const QuizGame = () => {
   const [list, setList] = useState([])
@@ -77,6 +78,8 @@ const QuizGame = () => {
     }
   }
 
+  const currentQuestion = list[activeQues]
+
   return (
     <>
       <Header />
@@ -95,15 +98,13 @@ const QuizGame = () => {
               </div>
             </div>
             <div className="middle-section">
-              <div className="ques-container">
-                <p className="ques">ques</p>
-                <ul className="mcq-box">
-                  <li className="ans">hi</li>
-                  <li className="ans">hi</li>
-                  <li className="ans">hi</li>
-                  <li className="ans">hi</li>
-                </ul>
-              </div>
+              {/* <Question
+                question={currentQuestion}
+                onAnswer={moveToNextQues}
+                timer={timer}
+                isRunning={isRunning}
+                setIsRunning={setIsRunning}
+              /> */}
               <div className="bottom-section">
                 <button
                   type="button"

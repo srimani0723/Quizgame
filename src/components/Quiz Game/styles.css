@@ -90,37 +90,6 @@
   width: 80%;
 }
 
-.ques-container {
-  width: 100%;
-}
-
-.mcq-box {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.ans {
-  width: 40%;
-  margin: 10px 10px 10px 0px;
-  border-radius: 8px;
-  padding: 10px;
-  background-color: #cbd5e1;
-  color: #334155;
-  list-style: none;
-  cursor: pointer;
-}
-
-.ques {
-  color: #334155;
-  font-family: 'Inter';
-  font-weight: 500;
-  font-size: 24px;
-  line-height: 32px;
-  letter-spacing: 0px;
-}
-
 .bottom-section {
   width: 100%;
   display: flex;
