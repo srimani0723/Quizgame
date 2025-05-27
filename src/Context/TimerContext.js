@@ -2,7 +2,7 @@ import React from 'react'
 
 const TimerContext = React.createContext({
   timer: 15,
-  isrunning: false,
+  isRunning: false,
   startTimer: () => {},
   stopTimer: () => {},
   resetTimer: () => {},
