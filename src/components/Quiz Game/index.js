@@ -1,39 +1,66 @@
 import './styles.css'
-import {useEffect, useState, useContext} from 'react'
+import {useEffect, useState, useContext, useCallback} from 'react'
 import Cookies from 'js-cookie'
+import Loader from 'react-loader-spinner'
 import Header from '../Header'
 import QuestionsContext from '../../Context/QuestionsContext'
 import Question from '../Question'
 
+const toCamelCase = str =>
+  str.replace(/(_\w)/g, match => match[1].toUpperCase())
+
+const convertKeysToCamelCase = obj => {
+  if (Array.isArray(obj)) {
+    return obj.map(item => convertKeysToCamelCase(item))
+  }
+  if (typeof obj === 'object' && obj !== null) {
+    return Object.keys(obj).reduce((acc, key) => {
+      const camelKey = toCamelCase(key)
+      acc[camelKey] = convertKeysToCamelCase(obj[key])
+      return acc
+    }, {})
+  }
+  return obj
+}
+
+const apiStatusConstants = {
+  initial: 'INITIAL',
+  inProgress: 'IN_PROGRESS',
+  success: 'SUCCESS',
+  failure: 'FAILURE',
+}
+
 const QuizGame = () => {
   const [list, setList] = useState([])
   const [activeQues, setActiveQues] = useState(0)
-  const [timer, setTimer] = useState(15)
+  const [timer, setTimer] = useState(5)
   const [isRunning, setIsRunning] = useState(false)
-  const {
-    correctAnsIncrement,
-    wrongAnsIncrement,
-    unattemptedAnsIncrement,
-  } = useContext(QuestionsContext)
+  const [apiStatus, setApiStatus] = useState(apiStatusConstants.initial)
+  const {unattemptedAnsIncrement} = useContext(QuestionsContext)
+
+  const getQues = useCallback(async () => {
+    setApiStatus(apiStatusConstants.inProgress)
+    const jwtToken = Cookies.get('jwt_token')
+    const url = 'https://apis.ccbp.in/assess/questions'
+    const options = {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }
+    const fetchedData = await fetch(url, options)
+    if (fetchedData.ok) {
+      const data = await fetchedData.json()
+      const newData = convertKeysToCamelCase(data.questions)
+      setList(newData)
+      setApiStatus(apiStatusConstants.success)
+    } else {
+      setApiStatus(apiStatusConstants.failure)
+    }
+  }, [])
 
   useEffect(() => {
-    const getQues = async () => {
-      const jwtToken = Cookies.get('jwt_token')
-      const url = 'https://apis.ccbp.in/assess/questions'
-      const options = {
-        headers: {
-          Authorization: `Bearer ${jwtToken}`,
-        },
-      }
-      const fetchedData = await fetch(url, options)
-      if (fetchedData.ok) {
-        const data = await fetchedData.json()
-        setList(data.questions)
-        console.log(data)
-      }
-    }
     getQues()
-  }, [])
+  }, [getQues])
 
   useEffect(() => {
     let intervalId
@@ -52,70 +79,115 @@ const QuizGame = () => {
   }, [isRunning, timer])
 
   useEffect(() => {
-    setTimer(15)
-    setIsRunning(true)
-  }, [activeQues])
-
-  // Handle timer expiry
-  useEffect(() => {
-    if (timer === 0 && isRunning) {
-      setIsRunning(false)
-      unattemptedAnsIncrement(activeQues)
-      if (activeQues < list.length - 1) {
-        setActiveQues(prev => prev + 1)
-      } else {
-        console.log('Quiz completed!') // Replace with navigation or results logic
-      }
+    if (apiStatus === apiStatusConstants.success && list.length > 0) {
+      setTimer(5)
+      setIsRunning(true)
     }
-  }, [timer, isRunning, unattemptedAnsIncrement, activeQues, list.length])
+  }, [activeQues, apiStatus, list.length])
+
+  //   useEffect(() => {
+  //     if (timer === 0 && list.length > 0) {
+  //       setIsRunning(false)
+  //       unattemptedAnsIncrement(activeQues)
+  //     }
+  //   }, [timer, unattemptedAnsIncrement, list.length])
 
   // Move to next question
   const moveToNextQues = () => {
     if (activeQues < list.length - 1) {
       setActiveQues(prev => prev + 1)
+      setTimer(15)
     } else {
       console.log('Quiz completed!') // Replace with navigation or results logic
     }
   }
 
-  const currentQuestion = list[activeQues]
+  const retry = () => {
+    setList([])
+    setActiveQues(0)
+    setApiStatus(apiStatusConstants.initial)
+    setIsRunning(false)
+    setTimer(15)
+    getQues()
+  }
+
+  const QuizSection = () => {
+    const currentQuestion = list[activeQues]
+
+    return activeQues < list.length - 1 ? (
+      <>
+        <div className="top-section">
+          <div className="ques-count">
+            <p className="ques-h">Question</p>
+            <p className="ques-p">
+              {activeQues + 1}/{list.length}
+            </p>
+          </div>
+          <div className="count-box">
+            <p className="count-p">{timer}</p>
+          </div>
+        </div>
+        <div className="middle-section">
+          <Question
+            question={currentQuestion}
+            onAnswer={moveToNextQues}
+            timer={timer}
+            isRunning={isRunning}
+            setIsRunning={setIsRunning}
+            activeQues
+          />
+          <div className="bottom-section">
+            <button type="button" className="next-btn" onClick={moveToNextQues}>
+              Next Question
+            </button>
+          </div>
+        </div>
+      </>
+    ) : (
+      <p>Completed</p>
+    )
+  }
+
+  const FailureView = () => (
+    <div className="failure-box">
+      <img
+        src="https://assets.ccbp.in/frontend/react-js/nxt-assess-failure-img.png"
+        alt="failure-view"
+        className="failure-img"
+      />
+      <h1 className="failure-h1">Something went wrong</h1>
+      <p className="failure-p">Our server are busy please try again</p>
+      <button className="failure-btn" type="button" onClick={retry}>
+        Retry
+      </button>
+    </div>
+  )
+
+  const renderLoader = () => (
+    <div className="loader-container" data-testid="loader">
+      <Loader type="ThreeDots" color="#263868" height={50} width={50} />
+    </div>
+  )
+
+  const renderQuizGame = () => {
+    switch (apiStatus) {
+      case apiStatusConstants.inProgress:
+        return renderLoader()
+      case apiStatusConstants.success:
+        return QuizSection()
+      case apiStatusConstants.failure:
+        return FailureView()
+      default:
+        return null
+    }
+  }
 
   return (
     <>
       <Header />
       <>
         <div className="quiz-bg">
-          <div className="quiz-box">
-            <div className="top-section">
-              <div className="ques-count">
-                <p className="ques-h">Question</p>
-                <p className="ques-p">
-                  {activeQues}/{list.length}
-                </p>
-              </div>
-              <div className="count-box">
-                <p className="count-p">{timer}</p>
-              </div>
-            </div>
-            <div className="middle-section">
-              {/* <Question
-                question={currentQuestion}
-                onAnswer={moveToNextQues}
-                timer={timer}
-                isRunning={isRunning}
-                setIsRunning={setIsRunning}
-              /> */}
-              <div className="bottom-section">
-                <button
-                  type="button"
-                  className="next-btn"
-                  onClick={moveToNextQues}
-                >
-                  Next Question
-                </button>
-              </div>
-            </div>
-          </div>
+          <div className="quiz-box">{renderQuizGame()}</div>
         </div>
       </>
     </>

@@ -3,12 +3,23 @@ import './styles.css'
 import QuestionsContext from '../../Context/QuestionsContext'
 
 const Question = props => {
-  const {question, onAnswer, timer, isRunning, setIsRunning} = props
+  const {question, activeQues, onAnswer, timer, isRunning, setIsRunning} = props
   const {
     correctAnsIncrement,
     wrongAnsIncrement,
     unattemptedAnsIncrement,
   } = useContext(QuestionsContext)
+
+  console.log(timer)
+  useEffect(() => {
+    const run = () => {
+      if (timer === 0) {
+        setIsRunning(false)
+        unattemptedAnsIncrement(activeQues)
+      }
+    }
+    run()
+  }, [timer, unattemptedAnsIncrement, activeQues, setIsRunning])
 
   // Handle option click
   const handleOptionClick = isCorrect => {
@@ -26,7 +37,7 @@ const Question = props => {
 
   return (
     <div className="ques-container">
-      <p className="ques">{question.question_text}</p>
+      <p className="ques">{question.questionText}</p>
       <ul className="mcq-box">
         {question.options.map(option => (
           <li

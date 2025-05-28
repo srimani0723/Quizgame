@@ -1,6 +1,6 @@
 import {Switch, Route} from 'react-router-dom'
 import './App.css'
-import {useState} from 'react'
+import {useState, useCallback} from 'react'
 import Login from './components/Login'
 import Home from './components/Home'
 import QuizGame from './components/Quiz Game'
@@ -19,9 +19,10 @@ const App = () => {
     setWrongAns(prev => prev + 1)
   }
 
-  const unattemptedAnsIncrement = index => {
-    setUnattemptedAns(...unattemptedAns, index)
-  }
+  const unattemptedAnsIncrement = useCallback(index => {
+    console.log('added')
+    setUnattemptedAns([...unattemptedAns, index])
+  }, [])
 
   return (
     <QuestionsContext.Provider

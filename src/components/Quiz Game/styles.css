@@ -111,3 +111,60 @@
   padding: 5px 20px;
   cursor: pointer;
 }
+
+.loader-container {
+  margin: auto;
+}
+
+.failure-box {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.failure-h1 {
+  color: #334155;
+  font-family: 'Inter';
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 44px;
+  letter-spacing: 0%;
+  margin-bottom: 20px;
+}
+
+.failure-img {
+  width: 80%;
+  max-width: 700px;
+
+  margin-bottom: 20px;
+}
+
+.failure-p {
+  color: #64748b;
+  font-family: 'Inter';
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0%;
+  text-align: center;
+
+  margin-bottom: 20px;
+}
+
+.failure-btn {
+  background-color: #0ea5e9;
+  width: 76;
+  height: 40;
+  top: 779px;
+  left: 682px;
+  border: 0px;
+  border-radius: 4px;
+  padding-top: 8px;
+  padding-right: 20px;
+  padding-bottom: 8px;
+  padding-left: 20px;
+  gap: 10px;
+  cursor: pointer;
+  color: white;
+}
