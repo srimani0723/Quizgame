@@ -1,9 +1,8 @@
 import './styles.css'
-import {useEffect, useState, useContext, useCallback} from 'react'
+import {useEffect, useState, useCallback} from 'react'
 import Cookies from 'js-cookie'
 import Loader from 'react-loader-spinner'
 import Header from '../Header'
-import QuestionsContext from '../../Context/QuestionsContext'
 import Question from '../Question'
 
 const toCamelCase = str =>
@@ -33,10 +32,10 @@ const apiStatusConstants = {
 const QuizGame = () => {
   const [list, setList] = useState([])
   const [activeQues, setActiveQues] = useState(0)
-  const [timer, setTimer] = useState(5)
+  const [timer, setTimer] = useState(15)
   const [isRunning, setIsRunning] = useState(false)
+  //   const [disableBtn, setDisableBtn] = useState(true)
   const [apiStatus, setApiStatus] = useState(apiStatusConstants.initial)
-  const {unattemptedAnsIncrement} = useContext(QuestionsContext)
 
   const getQues = useCallback(async () => {
     setApiStatus(apiStatusConstants.inProgress)
@@ -52,6 +51,7 @@ const QuizGame = () => {
       const data = await fetchedData.json()
       const newData = convertKeysToCamelCase(data.questions)
       setList(newData)
+      console.log(newData)
       setApiStatus(apiStatusConstants.success)
     } else {
       setApiStatus(apiStatusConstants.failure)
@@ -80,7 +80,7 @@ const QuizGame = () => {
 
   useEffect(() => {
     if (apiStatus === apiStatusConstants.success && list.length > 0) {
-      setTimer(5)
+      setTimer(15)
       setIsRunning(true)
     }
   }, [activeQues, apiStatus, list.length])
@@ -134,10 +134,14 @@ const QuizGame = () => {
             timer={timer}
             isRunning={isRunning}
             setIsRunning={setIsRunning}
-            activeQues
           />
           <div className="bottom-section">
-            <button type="button" className="next-btn" onClick={moveToNextQues}>
+            <button
+              type="button"
+              className={timer > 0 ? 'next-btn-disable' : 'next-btn'}
+              onClick={moveToNextQues}
+              disabled={timer > 0}
+            >
               Next Question
             </button>
           </div>

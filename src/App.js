@@ -21,7 +21,7 @@ const App = () => {
 
   const unattemptedAnsIncrement = useCallback(index => {
     console.log('added')
-    setUnattemptedAns([...unattemptedAns, index])
+    setUnattemptedAns(prev => [...prev, index])
   }, [])
 
   return (

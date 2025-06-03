@@ -2,24 +2,25 @@ import {useState, useEffect, useContext} from 'react'
 import './styles.css'
 import QuestionsContext from '../../Context/QuestionsContext'
 
+const optionType = ['DEFAULT', 'SINGLE_SELECT', 'IMAGE']
+
 const Question = props => {
-  const {question, activeQues, onAnswer, timer, isRunning, setIsRunning} = props
+  const {question, onAnswer, timer, isRunning, setIsRunning} = props
   const {
     correctAnsIncrement,
     wrongAnsIncrement,
     unattemptedAnsIncrement,
   } = useContext(QuestionsContext)
 
-  console.log(timer)
   useEffect(() => {
     const run = () => {
       if (timer === 0) {
         setIsRunning(false)
-        unattemptedAnsIncrement(activeQues)
+        unattemptedAnsIncrement(question)
       }
     }
     run()
-  }, [timer, unattemptedAnsIncrement, activeQues, setIsRunning])
+  }, [timer, unattemptedAnsIncrement, question, setIsRunning])
 
   // Handle option click
   const handleOptionClick = isCorrect => {
@@ -35,9 +36,20 @@ const Question = props => {
     }
   }
 
-  return (
-    <div className="ques-container">
-      <p className="ques">{question.questionText}</p>
+  const defaultOptionRender = () =>
+    question.options.length > 2 ? (
+      <ol className="mcq-box-ordered">
+        {question.options.map(option => (
+          <li
+            key={option.id}
+            className="ans"
+            onClick={() => handleOptionClick(option.is_correct)}
+          >
+            <span>{option.text}</span>
+          </li>
+        ))}
+      </ol>
+    ) : (
       <ul className="mcq-box">
         {question.options.map(option => (
           <li
@@ -45,21 +57,16 @@ const Question = props => {
             className="ans"
             onClick={() => handleOptionClick(option.is_correct)}
           >
-            {question.options_type === 'IMAGE' ? (
-              <div className="image-option">
-                <img
-                  src={option.image_url}
-                  alt={option.text}
-                  className="option-image"
-                />
-                <span>{option.text}</span>
-              </div>
-            ) : (
-              <span>{option.text}</span>
-            )}
+            <span>{option.text}</span>
           </li>
         ))}
       </ul>
+    )
+
+  return (
+    <div className="ques-container">
+      <p className="ques">{question.questionText}</p>
+      {defaultOptionRender()}
     </div>
   )
 }
