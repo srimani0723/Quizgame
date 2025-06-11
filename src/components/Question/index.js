@@ -12,15 +12,17 @@ const Question = props => {
     unattemptedAnsIncrement,
   } = useContext(QuestionsContext)
   const [selectedAnsObj, setSelectedAnsObj] = useState('')
+  const [isAnswered, setIsAnswered] = useState(false)
 
   const ansObj = question.options.filter(each => each.isCorrect === 'true')
-  console.log(ansObj)
+  console.log(ansObj, selectedAnsObj, isAnswered)
 
   useEffect(() => {
     const run = () => {
       if (timer === 0) {
         setIsRunning(false)
         onAnswer()
+        setIsAnswered(true)
         unattemptedAnsIncrement(question)
       }
     }
@@ -32,6 +34,7 @@ const Question = props => {
     if (isRunning) {
       setIsRunning(false)
       onAnswer()
+      setIsAnswered(true)
       const isCorrectBool = isCorrect === 'true'
       if (isCorrectBool) {
         correctAnsIncrement()
@@ -47,8 +50,11 @@ const Question = props => {
         {question.options.map((option, index) => (
           <li
             key={option.id}
-            className="ans"
-            onClick={() => handleOptionClick(option.isCorrect)}
+            className={`ans `}
+            onClick={() => {
+              setSelectedAnsObj(option)
+              handleOptionClick(option.isCorrect)
+            }}
           >
             <span className="ans-alpha">
               {String.fromCharCode(65 + index)}.{' '}
@@ -63,7 +69,10 @@ const Question = props => {
           <li
             key={option.id}
             className="ans"
-            onClick={() => handleOptionClick(option.isCorrect)}
+            onClick={() => {
+              setSelectedAnsObj(option)
+              handleOptionClick(option.isCorrect)
+            }}
           >
             <span>{option.text}</span>
           </li>
@@ -74,21 +83,50 @@ const Question = props => {
   const renderImageOptions = () => (
     <ul className="mcq-box">
       {question.options.map(option => (
-        <li key={option.id} className="img-ans-li" onClick={handleOptionClick}>
+        <li
+          key={option.id}
+          className="img-ans-li"
+          onClick={() => {
+            setSelectedAnsObj(option)
+            handleOptionClick(option.isCorrect)
+          }}
+        >
           <img src={option.imageUrl} alt={option.text} className="img-ans" />
         </li>
       ))}
     </ul>
   )
 
-  const singleSelectOptions = () => {}
+  const renderSingleSelectOptions = () => (
+    <ul className="mcq">
+      {question.options.map((option, index) => (
+        <li
+          key={option.id}
+          style={{listStyle: 'none', display: 'flex', alignItems: 'center'}}
+        >
+          <input
+            type="radio"
+            name={option.id}
+            value={option.text}
+            onClick={() => {
+              setSelectedAnsObj(option)
+              handleOptionClick(option.isCorrect)
+            }}
+            disabled={!isRunning}
+            style={{marginRight: '5px'}}
+          />
+          <p style={{marginBottom: '5px'}}>{option.text}</p>
+        </li>
+      ))}
+    </ul>
+  )
 
   const renderByQuesType = () => {
     switch (question.optionsType) {
       case optionType[0]:
         return renderDefaultOptions()
       case optionType[1]:
-        return 'single_select'
+        return renderSingleSelectOptions()
       case optionType[2]:
         return renderImageOptions()
       default:

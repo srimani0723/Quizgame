@@ -31,7 +31,7 @@ const apiStatusConstants = {
 
 const QuizGame = () => {
   const [list, setList] = useState([])
-  const [activeQues, setActiveQues] = useState(1)
+  const [activeQues, setActiveQues] = useState(0)
   const [timer, setTimer] = useState(15)
   const [isRunning, setIsRunning] = useState(false)
   const [disableBtn, setDisableBtn] = useState(true)

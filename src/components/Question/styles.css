@@ -20,11 +20,22 @@
   border-radius: 8px;
   margin: 5px;
   padding: 10px 20px;
+  font-weight: 400;
   background-color: #cbd5e1;
   color: #334155;
   cursor: pointer;
   display: flex;
   align-items: center;
+}
+
+.wrong {
+  color: #f8fafc;
+  background-color: #bf2626;
+}
+
+.right {
+  color: #f8fafc;
+  background-color: #1c944b;
 }
 
 .question {
