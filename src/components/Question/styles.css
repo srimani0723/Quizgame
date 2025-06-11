@@ -7,6 +7,11 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+}
+
+.ans-alpha {
+  margin-right: 5px;
 }
 
 .ans {
@@ -14,7 +19,7 @@
   height: 64px;
   border-radius: 8px;
   margin: 5px;
-  padding: 10px;
+  padding: 10px 20px;
   background-color: #cbd5e1;
   color: #334155;
   cursor: pointer;
@@ -22,19 +27,27 @@
   align-items: center;
 }
 
-.ques {
+.question {
   color: #334155;
   font-family: 'Inter';
   font-weight: 500;
-  font-size: 24px;
-  line-height: 32px;
-  letter-spacing: 0px;
+  font-size: 20px;
+  margin-bottom: 10px;
 }
 
-.mcq-box-ordered {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  list-style-type: upper-alpha;
+@media (min-width: 768px) {
+  .mcq-box {
+    width: 50%;
+  }
+}
+
+.img-ans-li {
+  width: 45%;
+  list-style: none;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.img-ans {
+  width: 100%;
 }

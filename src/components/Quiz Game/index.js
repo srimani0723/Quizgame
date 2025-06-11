@@ -31,10 +31,10 @@ const apiStatusConstants = {
 
 const QuizGame = () => {
   const [list, setList] = useState([])
-  const [activeQues, setActiveQues] = useState(0)
+  const [activeQues, setActiveQues] = useState(1)
   const [timer, setTimer] = useState(15)
   const [isRunning, setIsRunning] = useState(false)
-  //   const [disableBtn, setDisableBtn] = useState(true)
+  const [disableBtn, setDisableBtn] = useState(true)
   const [apiStatus, setApiStatus] = useState(apiStatusConstants.initial)
 
   const getQues = useCallback(async () => {
@@ -97,9 +97,15 @@ const QuizGame = () => {
     if (activeQues < list.length - 1) {
       setActiveQues(prev => prev + 1)
       setTimer(15)
+      setDisableBtn(prev => !prev)
     } else {
       console.log('Quiz completed!') // Replace with navigation or results logic
     }
+  }
+
+  const onAnswer = () => {
+    console.log(disableBtn)
+    setDisableBtn(false)
   }
 
   const retry = () => {
@@ -130,7 +136,7 @@ const QuizGame = () => {
         <div className="middle-section">
           <Question
             question={currentQuestion}
-            onAnswer={moveToNextQues}
+            onAnswer={onAnswer}
             timer={timer}
             isRunning={isRunning}
             setIsRunning={setIsRunning}
@@ -138,9 +144,9 @@ const QuizGame = () => {
           <div className="bottom-section">
             <button
               type="button"
-              className={timer > 0 ? 'next-btn-disable' : 'next-btn'}
+              className={disableBtn ? 'next-btn-disable' : 'next-btn'}
               onClick={moveToNextQues}
-              disabled={timer > 0}
+              disabled={disableBtn}
             >
               Next Question
             </button>

@@ -11,11 +11,16 @@ const Question = props => {
     wrongAnsIncrement,
     unattemptedAnsIncrement,
   } = useContext(QuestionsContext)
+  const [selectedAnsObj, setSelectedAnsObj] = useState('')
+
+  const ansObj = question.options.filter(each => each.isCorrect === 'true')
+  console.log(ansObj)
 
   useEffect(() => {
     const run = () => {
       if (timer === 0) {
         setIsRunning(false)
+        onAnswer()
         unattemptedAnsIncrement(question)
       }
     }
@@ -26,26 +31,29 @@ const Question = props => {
   const handleOptionClick = isCorrect => {
     if (isRunning) {
       setIsRunning(false)
-      const isCorrectBool = isCorrect === 'true' // Convert string to boolean
+      onAnswer()
+      const isCorrectBool = isCorrect === 'true'
       if (isCorrectBool) {
         correctAnsIncrement()
       } else {
         wrongAnsIncrement()
       }
-      onAnswer()
     }
   }
 
-  const defaultOptionRender = () =>
+  const renderDefaultOptions = () =>
     question.options.length > 2 ? (
-      <ol className="mcq-box-ordered">
-        {question.options.map(option => (
+      <ol className="mcq-box">
+        {question.options.map((option, index) => (
           <li
             key={option.id}
             className="ans"
-            onClick={() => handleOptionClick(option.is_correct)}
+            onClick={() => handleOptionClick(option.isCorrect)}
           >
-            <span>{option.text}</span>
+            <span className="ans-alpha">
+              {String.fromCharCode(65 + index)}.{' '}
+            </span>
+            <span> {option.text}</span>
           </li>
         ))}
       </ol>
@@ -55,7 +63,7 @@ const Question = props => {
           <li
             key={option.id}
             className="ans"
-            onClick={() => handleOptionClick(option.is_correct)}
+            onClick={() => handleOptionClick(option.isCorrect)}
           >
             <span>{option.text}</span>
           </li>
@@ -63,10 +71,35 @@ const Question = props => {
       </ul>
     )
 
+  const renderImageOptions = () => (
+    <ul className="mcq-box">
+      {question.options.map(option => (
+        <li key={option.id} className="img-ans-li" onClick={handleOptionClick}>
+          <img src={option.imageUrl} alt={option.text} className="img-ans" />
+        </li>
+      ))}
+    </ul>
+  )
+
+  const singleSelectOptions = () => {}
+
+  const renderByQuesType = () => {
+    switch (question.optionsType) {
+      case optionType[0]:
+        return renderDefaultOptions()
+      case optionType[1]:
+        return 'single_select'
+      case optionType[2]:
+        return renderImageOptions()
+      default:
+        return null
+    }
+  }
+
   return (
     <div className="ques-container">
-      <p className="ques">{question.questionText}</p>
-      {defaultOptionRender()}
+      <p className="question">{question.questionText}</p>
+      {renderByQuesType()}
     </div>
   )
 }
